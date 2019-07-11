@@ -25,15 +25,15 @@ Matrix* create_mat(int r, int c)
 	}
 }
 
-VR* create_vr(int d, int n)
+VectorSpace* create_vr(int d, int n)
 {
 	//initialisiert einen Vr und reserviert Speicher für die Einträge
 	if(d >= 0 && n > 0)
 	{
-		VR *V = (VR*)malloc(sizeof(VR));
+		VectorSpace *V = (VectorSpace*)malloc(sizeof(VectorSpace));
 		V->d = d;
 		V->n = n;
-		V->vec = (double*)malloc(d * n * sizeof(double));
+		V->bas = (double*)malloc(d * n * sizeof(double));
 		return V;
 	}
 	else
@@ -616,19 +616,18 @@ Solution* mat_spez_solution(Matrix *A, Matrix *B)
 	}
 }
 
-/*
-VR* mat_core(Matrix *A)
+VectorSpace* mat_core(Matrix *A)
 {
 	//bestimmt den Kern einer Matrix A
 	Matrix *B = mat_spez_step(A);
 	int rang = mat_rang(B);
-	VR *V = create_vr(rang, B->r);
+	VectorSpace *V = create_vr(B->r - rang, B->c);
 	int steps[rang];
-	int J_[B->r - rang];
+	int J[V->d];
 	for(int i = 0; i < rang; i++)
 	{
 		int j = 0;
-		while(*(B->mat + i * B->c + j) == 0 && j < B->c)
+		while(j < B->c - 1 && *(B->mat + i * B->c + j) == 0)
 		{
 			j++;
 		}
@@ -637,7 +636,7 @@ VR* mat_core(Matrix *A)
 	}
 	//J_ bestimmen
 	int J_pos = 0;
-	for(int i = 0; i < rang; i++)
+	for(int i = 0; i < B->r; i++)
 	{
 		bool is_in_j_ = true;
 		for(int j = 0; j < rang && is_in_j_; j++)
@@ -649,17 +648,31 @@ VR* mat_core(Matrix *A)
 		}
 		if(is_in_j_)
 		{
-			J_[J_pos++] = i;
+			J[J_pos] = i;
+			J_pos++;
 		}
 	}
 	for(int i = 0; i < V->d; i++)
 	{
-		for(int j = 0; j < V->n; j++)
+		for(int j = 0; j < rang; j++)
 		{
-			*(V->vec + i * rang + j) = 
-		}		
-	}	
-}*/
+			*(V->bas + i * V->n + steps[j]) = correct_zero(-(*(B->mat + steps[j] * B->c + J[i])));
+		}
+		for(int j = 0; j < V->d; j++)
+		{
+			if(i == j)//nur eine Eins pro Vektor verteilen und zwar an unterschiedliche Stellen
+			{
+				*(V->bas + i * V->n + J[j]) = 1;
+			}
+			else
+			{
+				*(V->bas + i * V->n + J[j]) = 0;
+			}			
+		}
+	}
+	free_mat(B);
+	return V;
+}
 
 double determinant(Matrix *A)
 {

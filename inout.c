@@ -122,13 +122,67 @@ void print_mat(Matrix *A)
 	//gibt eine Matrix tabellarisch aus
 	if(A)//Matrix ist nicht NULL also existiert
 	{
-		for(int i = 0; i < A->r; i++)
+		if(A->r == 1)//matrix mit nur einer Zeile braucht spezielle Klammern
 		{
+			printf("(");
 			for(int j = 0; j < A->c; j++)
 			{
-				printf("%-6.2g ", *(A->mat + i * A->c + j));
+				printf("%g", *(A->mat + j));
+				if(j != A->c - 1)
+				{
+					//space in der letzten Spalte wird weggelassen
+					putchar(' ');
+				}
 			}
-			putchar('\n');
+			printf(")\n");
+		}
+		else
+		{	
+			//breite der einzelnen spalten bestimmen	
+			int col_width[A->c];
+			for(int j = 0; j < A->c; j++)
+			{
+				col_width[j] = max_number_length(A->mat + j, A->r * A->c - j, A->c);
+			}
+			for(int i = 0; i < A->r; i++)
+			{
+				//richtige Klammer drucken
+				if(i == 0)
+				{
+					printf("⎛");
+				}
+				else if(i == A->r - 1)
+				{
+					printf("⎝");
+				}
+				else
+				{
+					printf("⎜");
+				}
+				for(int j = 0; j < A->c; j++)
+				{
+					printf("%g", *(A->mat + i * A->c + j));
+					fill_spaces(col_width[j], number_length(*(A->mat + i * A->c + j)));
+					if(j != A->c - 1)
+					{
+						//space in der letzten Spalte wird weggelassen
+						putchar(' ');
+					}
+				}
+				//richtige rechte Klammer drucken
+				if(i == 0)
+				{
+					printf("⎞\n");
+				}
+				else if(i == A->r - 1)
+				{
+					printf("⎠\n");
+				}
+				else
+				{
+					printf("⎟\n");
+				}
+			}
 		}
 	}
 	else
@@ -161,6 +215,82 @@ void print_solution(Solution *S)
 	}
 	else
 	{
-		printf("Error: Die Lösung existiert nicht!");
+		printf("Error: Die Lösung existiert nicht!\n");
+	}
+}
+
+void print_vr(VectorSpace *V)
+{
+	if(V)
+	{
+		if(V->n == 1)
+		{
+			printf("(%g)\n", *V->bas);
+		}
+		for(int i = 0; i < V->n; i++)
+		{
+			for(int j = 0; j < V->d; j++)
+			{
+				printf("%g ", *(V->bas + j * V->n + i));
+			}
+			putchar('\n');
+		}
+	}
+	else
+	{
+		printf("Error: Der Vektorraum existiert nicht!\n");
+	}
+}
+
+int number_length(double x)
+{
+	//gibt Dezimalstellen von x mit maximal 2 nachkommastellen und bei bedarf dem punkt dazu gerechnet zurück
+	int r = 0;
+	double tmp = x * 10;
+	if((int)tmp % 10 != 0)
+	{
+		r += 2; //1 nachkommastelle und dezimalpunkt
+		tmp = x * 10;
+		if((int)tmp % 10 != 0)
+		{
+			r++; //zweite nachkommastelle
+		}
+	}
+	if(r < 0)
+	{
+		r++; //vorzeichen
+	}
+	tmp = abs((int)x);
+	do
+	{
+		r++; //stellen zählen
+		tmp /= 10;
+	}
+	while(tmp > 0);
+	return r;
+}
+
+int max_number_length(const double *F , int n, int skip)
+{
+	//gibt die größte Länge einer Zahl aus dem Array F (länge n) zurück
+	//mit skip wird nur jedes skip-te wort gelesn und so können zum beispiel nur spalten gelesen werden
+	int max_length = 0;
+	for(int i = 0; i < n / skip; i++)
+	{
+		int num_length = number_length(*(F + i * skip));
+		if(num_length > max_length)
+		{
+			max_length = num_length;
+		} 
+	}
+	return max_length;
+}
+
+void fill_spaces(int width, int length)
+{
+	//füllt einen bereich bis breite width abzüglich des schon genutzten bereichs length mit leerzeichen
+	for(int i = length; i < width; i++)
+	{
+		putchar(' ');
 	}
 }

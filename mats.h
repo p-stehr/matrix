@@ -10,7 +10,7 @@
 	#include "inout.h"
 
 	Matrix* create_mat(int r, int c);
-	VR* create_vr(int d, int n);
+	VectorSpace* create_vr(int d, int n);
 	Solution* create_solution(int n);
 	Matrix* create_En(int n);
 	Matrix *create_zero(int r, int c);
@@ -44,6 +44,7 @@
 	Matrix* mat_spez_step(Matrix *A);
 	Matrix* mat_gauss_jordan(Matrix *A, Matrix *B);
 	Solution* mat_spez_solution(Matrix *A, Matrix *B);
+	VectorSpace* mat_core(Matrix *A);
 	double determinant(Matrix *A);
 	Matrix* mat_ij(Matrix *A, int i, int j);
 	Matrix* mat_ij_(Matrix *A, int i, int j);

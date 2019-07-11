@@ -50,6 +50,7 @@ int main(int argc, char const *argv[])
 			    printf("╟(13): Stufen in Ordnung brinen\n");
 			    printf("╟(14): Spezielle Zeilenstufenform\n");
 			    printf("╟(15): Lösung von Gleichungssystem\n");
+			    printf("╟(16): Kern bestimmen\n");
 				printf("╙(0): Programm verlassen\n");
 				printf("\nOptionsauswahl: ");
 				scanf("%d", &option);
@@ -257,6 +258,14 @@ int main(int argc, char const *argv[])
 				{
 					printf("Die Lösung des LGS ist nicht eindeutig!\n");
 				}
+		    }
+		    else if(option == 16)
+		    {
+		    	//Kern bestimmen
+				printf("A =\n");
+				print_mat(A);
+				printf("kern(A) = \n");
+				print_vr(mat_core(A));
 		    }
 			else
 			{

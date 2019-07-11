@@ -12,8 +12,8 @@
 	{
 		int d; //Dimension also anzahl der Basisvektoren
 		int n; //Dimension der Einzelnen Basisvektoren
-		double *vec; //Array mit Basisvektorkoeffizienten
-	} VR;
+		double *bas; //Array mit Basisvektorkoeffizienten
+	} VectorSpace;
 
 	typedef struct
 	{
