@@ -7,6 +7,7 @@
 	#include <stdlib.h>
 	#include <math.h>
 	#include <time.h>
+	#include <string.h>
 	#include "mats.h"
 	
 	int read_row(void);
@@ -20,7 +21,7 @@
 	void print_solution(Solution *S);
 	void print_vr(VectorSpace *V);
 	int number_length(double x);
-	int max_number_length(const double *F , int n, int skip);
-	void fill_spaces(int width, int length);
+	int max_number_length(double *F , int n, int skip);
+	void fill_spaces(int n);
 
 #endif

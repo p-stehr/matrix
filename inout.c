@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 #include "mats.h"
 #include "inout.h"
 
@@ -142,7 +143,7 @@ void print_mat(Matrix *A)
 			int col_width[A->c];
 			for(int j = 0; j < A->c; j++)
 			{
-				col_width[j] = max_number_length(A->mat + j, A->r * A->c - j, A->c);
+				col_width[j] = max_number_length(A->mat + j, A->r * A->c, A->c);
 			}
 			for(int i = 0; i < A->r; i++)
 			{
@@ -162,7 +163,7 @@ void print_mat(Matrix *A)
 				for(int j = 0; j < A->c; j++)
 				{
 					printf("%g", *(A->mat + i * A->c + j));
-					fill_spaces(col_width[j], number_length(*(A->mat + i * A->c + j)));
+					fill_spaces(col_width[j] - number_length(*(A->mat + i * A->c + j)));
 					if(j != A->c - 1)
 					{
 						//space in der letzten Spalte wird weggelassen
@@ -245,32 +246,12 @@ void print_vr(VectorSpace *V)
 int number_length(double x)
 {
 	//gibt Dezimalstellen von x mit maximal 2 nachkommastellen und bei bedarf dem punkt dazu gerechnet zurück
-	int r = 0;
-	double tmp = x * 10;
-	if((int)tmp % 10 != 0)
-	{
-		r += 2; //1 nachkommastelle und dezimalpunkt
-		tmp = x * 10;
-		if((int)tmp % 10 != 0)
-		{
-			r++; //zweite nachkommastelle
-		}
-	}
-	if(r < 0)
-	{
-		r++; //vorzeichen
-	}
-	tmp = abs((int)x);
-	do
-	{
-		r++; //stellen zählen
-		tmp /= 10;
-	}
-	while(tmp > 0);
-	return r;
+	char buffer[50];
+	sprintf(buffer, "%.2g", x);
+	return strlen(buffer);
 }
 
-int max_number_length(const double *F , int n, int skip)
+int max_number_length(double *F, int n, int skip)
 {
 	//gibt die größte Länge einer Zahl aus dem Array F (länge n) zurück
 	//mit skip wird nur jedes skip-te wort gelesn und so können zum beispiel nur spalten gelesen werden
@@ -286,10 +267,10 @@ int max_number_length(const double *F , int n, int skip)
 	return max_length;
 }
 
-void fill_spaces(int width, int length)
+void fill_spaces(int n)
 {
-	//füllt einen bereich bis breite width abzüglich des schon genutzten bereichs length mit leerzeichen
-	for(int i = length; i < width; i++)
+	//füllt einen bereich mit n leerzeichen auf
+	for(int i = 0; i < n; i++)
 	{
 		putchar(' ');
 	}

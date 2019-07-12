@@ -7,6 +7,7 @@
 	#include <stdlib.h>
 	#include <math.h>
 	#include <time.h>
+	#include <string.h>
 	#include "inout.h"
 
 	Matrix* create_mat(int r, int c);
