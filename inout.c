@@ -121,6 +121,7 @@ Matrix* read_coe(int r, int c)
 void print_mat(Matrix *A)
 {
 	//gibt eine Matrix tabellarisch aus
+	putchar('\n');
 	if(A)//Matrix ist nicht NULL also existiert
 	{
 		if(A->r == 1)//matrix mit nur einer Zeile braucht spezielle Klammern
@@ -251,7 +252,7 @@ int number_length(double x)
 	return strlen(buffer);
 }
 
-int max_number_length(double *F, int n, int skip)
+int max_number_length(const double *F, int n, int skip)
 {
 	//gibt die größte Länge einer Zahl aus dem Array F (länge n) zurück
 	//mit skip wird nur jedes skip-te wort gelesn und so können zum beispiel nur spalten gelesen werden
@@ -274,4 +275,55 @@ void fill_spaces(int n)
 	{
 		putchar(' ');
 	}
+}
+
+bool change_mat_prompt(void)
+{
+    printf("\nMit dieser Matrix fortfahren? (j/n)\n");
+    return check_jn();
+}
+
+void print_high_number(int x)
+{
+    if(x == 0)
+    {
+        printf("⁰");
+    }
+    while(x != 0)
+    {
+        int d = x % 10;
+        switch(d)
+        {
+            case 1:
+                printf("¹");
+                break;
+            case 2:
+                printf("²");
+                break;
+            case 3:
+                printf("³");
+                break;
+            case 4:
+                printf("⁴");
+                break;
+            case 5:
+                printf("⁵");
+                break;
+            case 6:
+                printf("⁶");
+                break;
+            case 7:
+                printf("⁷");
+                break;
+            case 8:
+                printf("⁸");
+                break;
+            case 9:
+                printf("⁹");
+                break;
+            default:
+                printf("⁰");
+        }
+        x /= 10;
+    }
 }

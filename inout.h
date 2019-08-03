@@ -21,7 +21,9 @@
 	void print_solution(Solution *S);
 	void print_vr(VectorSpace *V);
 	int number_length(double x);
-	int max_number_length(double *F , int n, int skip);
+	int max_number_length(const double *F , int n, int skip);
 	void fill_spaces(int n);
+    bool change_mat_prompt(void);
+    void print_high_number(int x);
 
 #endif

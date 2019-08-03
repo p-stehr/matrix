@@ -180,22 +180,6 @@ bool mat_equal(Matrix *A, Matrix *B)
 	}
 }
 
-bool mat_is_En(Matrix *A)
-{
-	//true <=> Matrix ist En
-	if(mat_is_quad(A))
-	{
-		Matrix *B = create_En(A->r);
-		bool r = mat_equal(A, B);
-		free_mat(B);
-		return r;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 bool is_zero_row(Matrix *A, int n)
 {
 	//true <=> Zeile n ist Nullzeile
@@ -232,7 +216,7 @@ int is_nilpotent(Matrix *A)
 	if(mat_is_quad(A))
 	{
 		Matrix *B = copy_mat(A);
-		for(int i = 1; i <= A->r && r != 0; i++) //r != damit sobald eine potenz gefunden wurde für die nilpotent ist, aufgehört wird
+		for(int i = 1; i <= A->r && r == 0; i++) //r != damit sobald eine potenz gefunden wurde für die nilpotent ist, aufgehört wird
 		{
 			if(mat_is_zero(B))
 			{
@@ -259,6 +243,26 @@ bool is_idempotent(Matrix *A)
 		free_mat(B);
 	}
 	return r;
+}
+
+bool is_symmetric(Matrix *A)
+{
+    //true <=> Matrix ist symmetrisch
+    Matrix *B = mat_trans(A);
+    bool r = mat_equal(A, B);
+    free_mat(B);
+    return r;
+}
+
+bool is_orthogonal(Matrix *A)
+{
+    // true <=> Matrix ist orthogonal
+    Matrix *B = mat_trans(A);
+    Matrix *C = mat_inverse(A);
+    bool r = mat_equal(B, C);
+    free_mat(B);
+    free_mat(C);
+    return r;
 }
 
 Matrix* mat_add(Matrix *A, Matrix *B)
@@ -830,7 +834,7 @@ Matrix* mat_main_minor(Matrix *A, int n)
 			{
 				for(int j = 0; j < n; j++)
 				{
-					*(R->mat + i * n + j) = *(A->mat + i * n + j);
+					*(R->mat + i * n + j) = *(A->mat + i * A->c + j);
 				}
 			}
 			return R;
@@ -851,49 +855,75 @@ Matrix* mat_main_minor(Matrix *A, int n)
 int mat_definitheit_sylvester(Matrix *A)
 {
 	//bestimmt dei Definitheit mit sylvester-kriterium
-	//0 <=> Keine Aussage
+	//0 <=> indefinit
 	//1 <=> positiv definit
+	//2 <=> positiv semidefinit
 	//-1 <=> negativ definit
+	//-2 <=> negativ semidefinit
 	int r = 0;
 	if(mat_is_quad(A))
 	{
 		double main_minors[A->r];
+		bool semi = false;
 		for(int i = 0; i < A->r; i++)
 		{
 			main_minors[i] = determinant(mat_main_minor(A, i + 1));
 		}
 		if(main_minors[0] > 0)
 		{
-			int r = 1;
+			r = 1;
 			for(int i = 1; i < A->r && r == 1; i++)
 			{
-				if(main_minors[i] <= 0)
+				if(main_minors[i] < 0)
 				{
 					r = 0;
 				}
+				else if(main_minors[i] == 0)
+                {
+				    semi = true;
+                }
 			}
 		}
 		else if(main_minors[0] < 0)
 		{
-			int r = -1;
+			r = -1;
 			for(int i = 1; i < A->r && r == -1; i++)
 			{
 				if(i % 2)
 				{
-					if(main_minors[i] <= 0)
+					if(main_minors[i] < 0)
 					{
 						r = 0;
 					}
+					else if(main_minors[i] == 0)
+                    {
+                        semi = true;
+                    }
 				}
 				else
 				{
-					if(main_minors[i] >= 0)
+				    if(main_minors[i] > 0)
 					{
 						r = 0;
 					}
+				    else if(main_minors[i] == 0)
+                    {
+                        semi = true;
+                    }
 				}
 			}
 		}
+		if(semi)
+        {
+		    if(r == 1)
+            {
+		        r = 2;
+            }
+		    else if(r == -1)
+            {
+		        r = -2;
+            }
+        }
 	}
 	return r;
 }

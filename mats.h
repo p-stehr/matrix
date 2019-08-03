@@ -14,7 +14,6 @@
 	VectorSpace* create_vr(int d, int n);
 	Solution* create_solution(int n);
 	Matrix* create_En(int n);
-	Matrix *create_zero(int r, int c);
 	Matrix* copy_mat(Matrix *A);
 	void free_mat(Matrix *A);
 	bool mat_is_quad(Matrix *A);
@@ -26,11 +25,12 @@
 	bool index_in_range_col(Matrix *A, int j);
 	bool mat_invertable(Matrix *A);
 	bool mat_equal(Matrix *A, Matrix *B);
-	bool mat_is_En(Matrix *A);
 	bool mat_is_zero(Matrix *A);
 	bool is_zero_row(Matrix *A, int n);
 	int is_nilpotent(Matrix *A);
 	bool is_idempotent(Matrix *A);
+    bool is_symmetric(Matrix *A);
+    bool is_orthogonal(Matrix *A);
 	Matrix* mat_add(Matrix *A, Matrix *B);
 	Matrix* mat_mul(Matrix *A, Matrix *B);
 	Matrix* mat_pow(Matrix *A, int p);
@@ -54,5 +54,8 @@
 	int mat_rang(Matrix *A);
 	Matrix* mat_trans(Matrix *A);
 	Matrix* mat_main_minor(Matrix *A, int n);
+    double correct_zero(double x);
+    int mat_definitheit_sylvester(Matrix *A);
+    Matrix* mat_trafo_formel(Matrix *A, Matrix *S);
 
 #endif
