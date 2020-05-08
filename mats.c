@@ -782,7 +782,7 @@ Matrix* mat_inverse(Matrix *A)
 	if(det != 0)
 	{
 		Matrix *R = mat_adj(A);
-		mat_skal_mul(A, 1.0 / det);
+		R = mat_skal_mul(R, 1.0 / det);
 		return R;
 	}
 	else
